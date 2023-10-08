@@ -1,0 +1,48 @@
+networks:
+  net-web:
+    driver: bridge
+  net-banco:
+    driver: host
+
+services:
+  front-end:
+    image: nginx
+    container_name: "nginx-compose"
+    depends_on:
+      - banco-dados
+    ports:
+      - "8081:80"
+    volumes:
+      - "./dudu:/usr/share/nginx/html"
+    networks:
+      - net-web
+
+  back-end:
+    image: node
+    container_name: "node-compose"
+
+  banco-dados:
+    image: mysql
+    container_name: "banco-dados-mysql"
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=dudu
+    volumes:
+      - "./test:/var/lib/mysql/"
+    ports:
+      - "3306:3306"
+    networks:
+      - net-banco
+
+  zabbix:
+    image: zabbix/zabbix-server-mysql:ubuntu-5.0.1
+    container_name: "zabbix-compose"
+    ports:
+      - "10050:50"
+
+  grafana:
+    image: grafana/grafana
+    container_name: "grafana-compose"
+    ports:
+      - "3000:30"

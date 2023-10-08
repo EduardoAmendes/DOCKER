@@ -1,0 +1,22 @@
+services:
+  networks:
+    net-web:
+      driver: bridge
+    net-db:
+      driver: host
+
+  web:
+    image: eduardoam/eduardo.node
+    container_name: "nginx-compose"
+    ports:
+      - "8081:80"
+    volumes:
+      - "./dudu:/usr/share/nginx/html"
+    networks:
+      - net-web
+
+  redis:
+    image: redis
+    container_name: "redis-compose"
+    ports:
+      - "6379:6379"
